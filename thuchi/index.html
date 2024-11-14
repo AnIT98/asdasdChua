@@ -79,6 +79,7 @@
         // Fetch data from API
         function fetchThuChi() {
             $.get(apiUrl + '?action=list', function(response) {
+                console.log(response)
                 if (response.status === 'success') {
                     renderTable(response.data);
                 } else {
