@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Quy Y</title>
+    <!-- Include necessary libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+            integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+          integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+<nav>
+    <!-- Include your menu here -->
+</nav>
+<div class="row" id="ds">
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center mb-5">
+            <h3>Danh sách phật tử quy y Chùa Long Thọ</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 d-flex justify-content-end mb-5 align-items-center" style="margin-left: -65px;">
+            <button type="button" class="btn btn-primary" id="btnAddNew">Thêm Mới</button>
+            <button type="button" class="btn btn-info" id="btnin" name="btnin" style="margin-left: 68px;">In</button>
+        </div>
+        <div class="col-6 d-flex justify-content-start mb-5 align-items-center" style="margin-top: 22px;">
+            <input type="file" id="fileInput" accept=".txt">
+            <button type="button" class="btn btn-primary mb-2" id="btnLoad">Tải Dữ Liệu</button>
+            <button type="button" class="btn btn-success mb-2" id="btnSave" style="margin-left: 10px;">Lưu Dữ Liệu</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center mb-5">
+            <table id="tbl_thuchi" class="table table-bordered display" style="min-width:800px">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Họ Tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Pháp danh</th>
+                    <th>Ngày quy y</th>
+                    <th>Địa chỉ</th>
+                    <th style="width: 138px;" class="hide-on-print">Hành Động</th>
+                </tr>
+                </thead>
+                <tbody id="table-body">
+                <!-- Data will be injected by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<style>
+    @media print {
+        .hide-on-print {
+            display: none;
+        }
+    }
+</style>
+<div class="row">
+    <div id="f-thuchi" class="col-12 d-flex justify-content-center mb-5 d-none">
+        <form style="min-width:800px; position: absolute;top: 4%; left: 18%; z-index:999" action="#" method="POST">
+            <h3>Quy Y</h3>
+            <input type="hidden" id="edit-index" name="edit-index" value="-1">
+            <div class="form-group">
+                <label for="ngaysinh">Ngày Sinh</label>
+                <input type="text" class="form-control" id="ngaysinh" name="ngaysinh">
+            </div>
+            <div class="form-group">
+                <label for="ngayquyy">Ngày Quy Y</label>
+                <input type="text" class="form-control" id="ngayquyy" name="ngayquyy">
+            </div>
+            <div class="form-group">
+                <label for="hoten">Họ Tên</label>
+                <input type="text" class="form-control" id="hoten" name="hoten">
+            </div>
+            <div class="form-group">
+                <label for="phapdanh">Pháp Danh</label>
+                <input type="text" class="form-control" id="phapdanh" name="phapdanh">
+            </div>
+            <div class="form-group">
+                <label for="diachi">Địa Chỉ</label>
+                <input type="text" class="form-control" id="diachi" name="diachi">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" id="btn-luu">Lưu</button>
+                <button type="button" class="btn btn-primary" id="btndong" style="margin-left:70px;">Đóng</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+        integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    const tableBody = document.getElementById('table-body');
+    const form = document.querySelector('#f-thuchi form');
+    const editIndexInput = document.getElementById('edit-index');
+
+    function loadData(data) {
+        tableBody.innerHTML = ''; // Clear existing table rows
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.hoTen}</td>
+                <td>${item.ngaySinh}</td>
+                <td>${item.phapDanh}</td>
+                <td>${item.ngayQuyY}</td>
+                <td>${item.diaChi}</td>
+                <td class="hide-on-print">
+                    <button class="btn btn-sm btn-warning" onclick="editItem(${index})">Sửa</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteItem(${index})">Xóa</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function saveData() {
+        const data = JSON.parse(localStorage.getItem('quyYData')) || [];
+        const index = parseInt(editIndexInput.value, 10);
+        const newItem = {
+            ngaySinh: form.ngaysinh.value,
+            ngayQuyY: form.ngayquyy.value,
+            hoTen: form.hoten.value,
+            phapDanh: form.phapdanh.value,
+            diaChi: form.diachi.value
+        };
+
+        if (index === -1) {
+            data.push(newItem);
+        } else {
+            data[index] = newItem;
+        }
+
+        // Write data to a text file (simulated)
+        const textData = data.map(item =>
+            `${item.hoTen}|${item.ngaySinh}|${item.phapDanh}|${item.ngayQuyY}|${item.diaChi}`
+        ).join('\n');
+
+        const blob = new Blob([textData], { type: "text/plain;charset=utf-8" });
+        saveAs(blob, "data.txt");
+
+        // Update localStorage
+        localStorage.setItem('quyYData', JSON.stringify(data));
+
+        loadData(data);
+        form.reset();
+        $("#f-thuchi").addClass("d-none");
+        $("#ds").removeClass("d-none");
+    }
+
+    function editItem(index) {
+        const data = JSON.parse(localStorage.getItem('quyYData')) || [];
+        const item = data[index];
+        form.ngaysinh.value = item.ngaySinh;
+        form.ngayquyy.value = item.ngayQuyY;
+        form.hoten.value = item.hoTen;
+        form.phapdanh.value = item.phapDanh;
+        form.diachi.value = item.diaChi;
+        editIndexInput.value = index;
+        $("#f-thuchi").removeClass("d-none");
+        $("#ds").addClass("d-none");
+    }
+
+    function deleteItem(index) {
+        const data = JSON.parse(localStorage.getItem('quyYData')) || [];
+        data.splice(index, 1);
+        localStorage.setItem('quyYData', JSON.stringify(data));
+        loadData(data);
+    }
+
+    document.getElementById('btn-luu').addEventListener('click', saveData);
+
+    $("#btndong").click(function() {
+        form.reset();
+        $("#f-thuchi").addClass("d-none");
+        $("#ds").removeClass("d-none");
+    });
+
+    $("#btnAddNew").click(function() {
+        form.reset();
+        editIndexInput.value = -1;
+        $("#f-thuchi").removeClass("d-none");
+        $("#ds").addClass("d-none");
+    });
+
+    document.getElementById('btnLoad').addEventListener('click', function() {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const content = e.target.result.split('\n').map(line => {
+                const [hoTen, ngaySinh, phapDanh, ngayQuyY, diaChi] = line.split('|');
+                return { hoTen, ngaySinh, phapDanh, ngayQuyY, diaChi };
+            });
+
+            // Load the data into the table
+            loadData(content);
+            // Update localStorage
+            localStorage.setItem('quyYData', JSON.stringify(content));
+        };
+
+        if (file) {
+            reader.readAsText(file);
+        }
+    });
+
+    $(function() {
+        var dateFormat = "dd/mm/yy",
+            from = $("#ngaysinh")
+                .datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                    numberOfMonths: 1
+                }),
+            to = $("#ngayquyy").datepicker({
+                dateFormat: 'dd-mm-yy',
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 1
+            });
+
+        function getDate(element) {
+            var date;
+            try {
+                date = $.datepicker.parseDate(dateFormat, element.value);
+            } catch (error) {
+                date = null;
+            }
+            return date;
+        }
+    });
+</script>
+</body>
+</html>
