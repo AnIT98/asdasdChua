@@ -79,12 +79,16 @@
         // Fetch data from API
         function fetchThuChi() {
             $.get(apiUrl + '?action=list', function(response) {
-                console.log(response)
+                console.log("API Response:", response); // Log full response for debugging
                 if (response.status === 'success') {
                     renderTable(response.data);
                 } else {
-                    alert(response.message);
+                    console.error("Error fetching data:", response.message);
+                    alert("Error fetching data: " + response.message);
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("API Request Failed:", textStatus, errorThrown);
+                alert("Failed to fetch data from the server.");
             });
         }
 
@@ -92,8 +96,9 @@
         function renderTable(data) {
             const tbody = $('#tbl_thuchi tbody');
             tbody.empty();
-            data.forEach((item, index) => {
-                const row = `<tr>
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach((item, index) => {
+                    const row = `<tr>
                     <td>${index + 1}</td>
                     <td>${item.ngay}</td>
                     <td>${item.mota}</td>
@@ -102,8 +107,12 @@
                     <td>${item.dongia}</td>
                     <td>${item.tongtien}</td>
                 </tr>`;
-                tbody.append(row);
-            });
+                    tbody.append(row);
+                });
+            } else {
+                console.warn("No data received or data format is incorrect.");
+                tbody.append("<tr><td colspan='7' class='text-center'>No data available</td></tr>");
+            }
         }
 
         // Save new entry
@@ -116,24 +125,38 @@
                 dg: $('#dg').val(),
                 tong: $('#tong').val()
             };
+
             $.ajax({
                 url: apiUrl + '?action=add',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
                 success: function(response) {
-                    alert(response.message);
-                    $('#formModal').modal('hide');
-                    fetchThuChi();
+                    console.log("Save Response:", response); // Log for debugging
+                    if (response.status === 'success') {
+                        alert("Entry added successfully!");
+                        $('#formModal').modal('hide');
+                        fetchThuChi(); // Re-fetch the data to show the latest entries
+                    } else {
+                        alert("Failed to add entry: " + response.message);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("Save Request Failed:", textStatus, errorThrown);
+                    alert("Failed to save data.");
                 }
             });
         });
 
         // Open modal on Add New button
-        $('#btnAddNew').click(() => $('#formModal').modal('show'));
+        $('#btnAddNew').click(() => {
+            $('#formModal').modal('show');
+        });
 
         // Initialize fetch data
-        $(document).ready(() => fetchThuChi());
+        $(document).ready(() => {
+            fetchThuChi(); // Load initial data when the page loads
+        });
     </script>
 
 </body>
