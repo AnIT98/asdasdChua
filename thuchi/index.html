@@ -7,7 +7,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
 <body>
-    <div class="container">
+<div class="row d-flex justify-content-center mb-1">
+    <div class="col-12">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="dsthu.html">Quản Lý Thu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="dschi.html">Quản Lý Chi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="qlcongno.html">Nợ Củ</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+    <div class="container" id="ds">
         <h3 class="text-center my-4">Danh Sách Thu Chi Chùa Long Thọ</h3>
         <button type="button" class="btn btn-primary" id="btnAddNew">Thêm Mới</button>
         <button type="button" class="btn btn-info" id="btnin" style="margin-left: 10px;">In</button>
@@ -21,64 +47,64 @@
                     <th>Số Lượng</th>
                     <th>Đơn Giá</th>
                     <th>Tổng Tiền</th>
+                    <th>Hành Động</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
-    <!-- Form Modal -->
-    <div id="formModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Thêm Mới Thu/Chi</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <div class="row">
+        <div id="f-thuchi" class="col-12 d-flex justify-content-center mb-5 d-none">
+
+            <form style="min-width:800px; position: absolute;top: 4%; left: 18%; z-index:999" action="index.html"
+                  method="POST">
+                <h3>Thu/Chi</h3>
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Ngày</label><br>
+                    <input type="date" id="date" name="ngay">
                 </div>
-                <div class="modal-body">
-                    <form id="thuchiForm">
-                        <div class="form-group">
-                            <label>Ngày</label>
-                            <input type="date" id="ngay" name="ngay" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Mô Tả</label>
-                            <textarea id="mota" name="mota" class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Thu/Chi</label>
-                            <select id="thuorchi" name="thuorchi" class="form-control">
-                                <option value="1">Thu</option>
-                                <option value="-1">Chi</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Số Lượng</label>
-                            <input type="number" id="sl" name="sl" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Đơn Giá</label>
-                            <input type="number" id="dg" name="dg" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Tổng</label>
-                            <input type="number" id="tong" name="tong" class="form-control" required>
-                        </div>
-                        <button type="button" id="saveBtn" class="btn btn-primary mt-3">Lưu</button>
-                    </form>
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Mô Tả</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="7" name="mota"></textarea>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Số Lượng</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" name="sl">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Đơn Giá</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" name="dg">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Tổng</label>
+                    <input type="number" class="form-control" id="exampleFormControlInput1" name="tong">
+                </div>
+                <div class="form-group mb-5">
+                    <label for="exampleFormControlSelect1">Hành Động
+                    </label>
+                    <select class="form-control" id="exampleFormControlSelect1" name="thuorchi">
+                        <option value="1">Thu</option>
+                        <option value="-1">Chi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" id="btn-luu" name="btnluu">Lưu</button>
+                    <button type="button" class="btn btn-primary" id="btndong" style="margin-left:70px;">Đóng</button>
+                </div>
+            </form>
         </div>
     </div>
-
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+    integrity = "sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
+    crossorigin = "anonymous"
+    referrerpolicy = "no-referrer"></script>
     <script>
-        const apiUrl = 'https://thoisumoingay.com/api/xuly.php';
+            const apiUrl = 'https://thoisumoingay.com/api/xuly.html';
 
-        // Fetch data from API
-        function fetchThuChi() {
-            $.get(apiUrl + '?action=list', function(response) {
+            // Fetch data from API
+            function fetchThuChi() {
+            $.get(apiUrl + '?action=list', function (response) {
                 console.log("API Response:", response); // Log full response for debugging
                 if (response.status === 'success') {
                     renderTable(response.data);
@@ -86,19 +112,19 @@
                     console.error("Error fetching data:", response.message);
                     alert("Error fetching data: " + response.message);
                 }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
+            }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.error("API Request Failed:", textStatus, errorThrown);
                 alert("Failed to fetch data from the server.");
             });
         }
 
-        // Render data to table
-        function renderTable(data) {
+            // Render data to table
+            function renderTable(data) {
             const tbody = $('#tbl_thuchi tbody');
             tbody.empty();
             if (Array.isArray(data) && data.length > 0) {
-                data.forEach((item, index) => {
-                    const row = `<tr>
+            data.forEach((item, index) => {
+            const row = `<tr>
                     <td>${index + 1}</td>
                     <td>${item.ngay}</td>
                     <td>${item.mota}</td>
@@ -106,56 +132,70 @@
                     <td>${item.soluong}</td>
                     <td>${item.dongia}</td>
                     <td>${item.tongtien}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning" id="btnxoa" onclick="xoa(item.id)">Xóa</button>
+                        <button type="button" class="btn btn-info" id="btnxoa" onclick="sua(item.id)">Sửa</button>
+                    </td>
                 </tr>`;
-                    tbody.append(row);
-                });
-            } else {
-                console.warn("No data received or data format is incorrect.");
-                tbody.append("<tr><td colspan='7' class='text-center'>No data available</td></tr>");
-            }
+            tbody.append(row);
+        });
+        } else {
+            console.warn("No data received or data format is incorrect.");
+            tbody.append("<tr><td colspan='7' class='text-center'>No data available</td></tr>");
+        }
         }
 
-        // Save new entry
-        $('#saveBtn').click(function() {
+            // Save new entry
+            $('#saveBtn').click(function() {
             const data = {
-                ngay: $('#ngay').val(),
-                mota: $('#mota').val(),
-                thuorchi: $('#thuorchi').val(),
-                sl: $('#sl').val(),
-                dg: $('#dg').val(),
-                tong: $('#tong').val()
-            };
+            ngay: $('#ngay').val(),
+            mota: $('#mota').val(),
+            thuorchi: $('#thuorchi').val(),
+            sl: $('#sl').val(),
+            dg: $('#dg').val(),
+            tong: $('#tong').val()
+        };
 
             $.ajax({
-                url: apiUrl + '?action=add',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function(response) {
-                    console.log("Save Response:", response); // Log for debugging
-                    if (response.status === 'success') {
-                        alert("Entry added successfully!");
-                        $('#formModal').modal('hide');
-                        fetchThuChi(); // Re-fetch the data to show the latest entries
-                    } else {
-                        alert("Failed to add entry: " + response.message);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error("Save Request Failed:", textStatus, errorThrown);
-                    alert("Failed to save data.");
-                }
-            });
+            url: apiUrl + '?action=add',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+            console.log("Save Response:", response); // Log for debugging
+            if (response.status === 'success') {
+            alert("Entry added successfully!");
+            $('#formModal').modal('hide');
+            fetchThuChi(); // Re-fetch the data to show the latest entries
+        } else {
+            alert("Failed to add entry: " + response.message);
+        }
+        },
+            error: function(jqXHR, textStatus, errorThrown) {
+            console.error("Save Request Failed:", textStatus, errorThrown);
+            alert("Failed to save data.");
+        }
+        });
         });
 
-        // Open modal on Add New button
-        $('#btnAddNew').click(() => {
-            $('#formModal').modal('show');
-        });
 
-        // Initialize fetch data
-        $(document).ready(() => {
+            // Initialize fetch data
+            $(document).ready(() => {
             fetchThuChi(); // Load initial data when the page loads
+        });
+
+
+            $("#btnin").click(function() {
+            window.print();
+        });
+            $("#datepicker").datepicker();
+            $("#btnAddNew").click(function() {
+            $("#f-thuchi").removeClass("d-none");
+            $("#ds").addClass("d-none");
+        });
+            $("#btndong").click(function() {
+            $("#ds").removeClass("d-none");
+            $("#f-thuchi").addClass("d-none");
         });
     </script>
 

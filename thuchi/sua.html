@@ -9,7 +9,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 if(isset($_GET['id'])){
 $id=$_GET['id'];
-    $sql = "SELECT * FROM `nocu` WHERE id = $id ";
+    $sql = "SELECT * FROM `thuchi` WHERE id = $id ";
     // echo $sql;
     // exit();
     $result = $conn->query($sql);
@@ -25,18 +25,22 @@ $id=$_GET['id'];
 }
 if(isset($_POST['btnluu'])){
     $idluu=$_POST['id_sua'];
-    $hoten=$_POST['hoten'];
-    $sotien=$_POST['sotien'];
-    $laixuat=$_POST['laixuat'];
+    $ngay=$_POST['ngay'];
+    $mota=$_POST['mota'];
+    $sl=$_POST['sl'];
+    $dg=$_POST['dg'];
+    $tong=$_POST['tong'];
+    $thuorchi=$_POST['thuorchi'];
 
-    $sqlluu="UPDATE `nocu` SET `hoten`='$hoten',`sotien`='$sotien',`laixuat`='$laixuat' WHERE `id` =  $idluu";
+
+    $sqlluu="UPDATE `thuchi` SET `ngay`='$ngay',`mota`='$mota',`thuorchi`='$thuorchi',`soluong`='$sl',`dongia`='$dg',`tongtien`='$tong' WHERE `id` =  $idluu";
   
     if ($conn->query($sqlluu) === TRUE) {
         echo "<script type='text/javascript'>alert('Sửa Thành Công');</script>";
       } else {
         echo "<script type='text/javascript'>alert('Sửa thất bại');</script>";
       }
-      echo ("<script>location.href='qlcongno.php'</script>");
+      echo ("<script>location.href='index.html'</script>");
 }
 $row = $result->fetch_assoc();
 $tongcong = 0;
@@ -70,30 +74,58 @@ $conn->close();
 </head>
 
 <body>
-    <?php include 'menu.php'; ?>
+   <?php include 'menu.html'; ?>
     </div>
     <div class="row">
         <div id="f-thuchi" class="col-12 d-flex justify-content-center mb-5" style="">
-            <form style="min-width:800px; position: absolute;top: 9%; left: 18%; z-index:999" action="suacongno.php"
+            <form style="min-width:800px; position: absolute;top: 9%; left: 18%; z-index:999" action="sua.html"
                 method="POST">
                 <h3>Sửa Lại</h3>
                 <div class="form-group d-none">
                     <label for="exampleFormControlTextarea1">STT</label><br>
-                    <input type="text" id="text" name="id_sua" value="<?php echo $row["id"]?>"></input>
+                    <input type="text" id="text" name="id_sua" value="<?php echo $row["id"]?>">
                 </div>
                 <div class="form-group">
-                    <label for="exampleFormControlTextarea1">Họ Tên</label><br>
-                    <input type="text" id="date" name="hoten" value="<?php echo $row["hoten"]?>"></input>
+                    <label for="exampleFormControlTextarea1">Ngày</label><br>
+                    <input type="date" id="date" name="ngay" value="<?php echo $row["ngay"]?>">
                 </div>
                 <div class="form-group">
-                    <label for="exampleFormControlTextarea1">Số Tiền</label>
-                    <input class="form-control" id="sotien" 
-                        name="sotien" value="<?php echo $row["sotien"] ?>"></input>
+                    <label for="exampleFormControlTextarea1">Mô Tả</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="7"
+                        name="mota"><?php echo $row["mota"] ?></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="exampleFormControlTextarea1">Lãi Xuất</label>
-                    <input class="form-control" id="exampleFormControlTextarea1" 
-                        name="laixuat" value="<?php echo $row["laixuat"] ?>"></input>
+                    <label for="exampleFormControlInput1">Số Lượng</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" name="sl"
+                        value="<?php echo $row["soluong"] ?>">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Đơn Giá</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" name="dg"
+                        value="<?php echo $row["dongia"] ?>">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Tổng</label>
+                    <input type="number" class="form-control" id="exampleFormControlInput1" name="tong"
+                        value="<?php echo $row["tongtien"] ?>">
+                </div>
+                <div class="form-group mb-5">
+                    <label for="exampleFormControlSelect1">Hành Động
+                    </label>
+                    <select class="form-control" id="exampleFormControlSelect1" name="thuorchi">
+                        <?php
+    if ($row["thuorchi"] == 1) {
+        echo('<option selected="selected" value='.'1'.'>'.'Thu'.'</option>');
+    } else {
+        echo('<option value='.'1'.'>'.'Thu'.'</option>');
+    }
+    if ($row["thuorchi"] == -1) {
+        echo('<option selected="selected" value='.'-1'.'>'.'Chi'.'</option>');
+    } else {
+        echo('<option value='.'-1'.'>'.'Chi'.'</option>');
+    }
+?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary" id="btn-luu" name="btnluu">Lưu</button>
@@ -112,33 +144,37 @@ $conn->close();
     </script>
     </script>
     <script>
-
+    $("#datepicker").datepicker();
+    $("#datepickertu").datepicker();
+    $("#datepickerden").datepicker();
     $("#btnAddNew").click(function() {
         $("#f-thuchi").removeClass("d-none");
         $("#ds").addClass("d-none");
     });
     $("#btndong").click(function() {
-        location.href = 'index.php';
+        location.href = 'index.html';
     });
 
-    // function xoa(id) {
-    //     if (confirm("Bạn chắc chắn muốn xóa!") == true) {
-    //         $.ajax({
-    //             url: "xoa.php", //the page containing php script
-    //             type: "post", //request type,
-    //             dataType: 'json',
-    //             data: {
-    //                 id: id
-    //             },
-    //             success: function(result) {
-    //                 console.log(result);
-    //                 alert('xóa thành công!');
-    //                 location.href = 'dschi.php';
-    //             }
-    //         });
-    //         location.href = 'dschi.php';
-    //     }
-    // }
+    function xoa(id) {
+        if (confirm("Bạn chắc chắn muốn xóa!") == true) {
+            console.log("a");
+            console.log("a");
+            $.ajax({
+                url: "xoa.html", //the page containing php script
+                type: "post", //request type,
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function(result) {
+                    console.log(result);
+                    alert('xóa thành công!');
+                    location.href = 'dschi.html';
+                }
+            });
+            location.href = 'dschi.html';
+        }
+    }
     </script>
  
 </body>

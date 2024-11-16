@@ -6,32 +6,26 @@ $dbname = "nguogxaj_chualongtho";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
-if(isset($_GET['xoa'])){
-    $id=$_GET['id'];
-    $sqlxoa = "DELETE FROM `nocu` WHERE id = '$id'";
-    if ($conn->query($sqlxoa) === TRUE) {
-        echo "<script type='text/javascript'>alert('Thêm Thành Công');</script>";
-      } else {
-        echo "<script type='text/javascript'>alert('Thêm thất bại');</script>";
-      }
-      echo ("<script>location.href='qlcongno.php'</script>");
-}
-if(isset($_POST['btnluu'])){
-    $hoten=$_POST['hoten'];
-    $sotien=$_POST['sotien'];
-    $laixuat=$_POST['laixuat'];
-    
-    $sql = "INSERT INTO `nocu`(`hoten`, `sotien`, `laixuat` ) VALUES ('$hoten','$sotien','$laixuat')";
-    if ($conn->query($sql) === TRUE) {
-        echo "<script type='text/javascript'>alert('Thêm Thành Công');</script>";
-      } else {
-        echo "<script type='text/javascript'>alert('Thêm thất bại');</script>";
-      }
-      echo ("<script>location.href='qlcongno.php'</script>");
-}
-$sql1 = "SELECT * FROM `nocu` ORDER by `id` DESC";
 
-$result = $conn->query($sql1);
+
+if(isset($_GET['btntim'])){
+    $tungay=date("Y-m-d", strtotime($_GET['tungay']));
+    $denngay=date("Y-m-d", strtotime($_GET['denngay']));
+    
+    $sql = "SELECT * FROM `thuchi` WHERE thuorchi ='1'  and `ngay` BETWEEN '$tungay' AND '$denngay' ORDER by `ngay` DESC";
+    // echo $sql;
+    // exit();
+    $result = $conn->query($sql);
+    if ($result === TRUE)  {
+       
+      } else {
+      
+      }
+}else{
+    $sql1 = "SELECT * FROM `thuchi` where `thuorchi` = '1' ORDER by `ngay` DESC";
+
+    $result = $conn->query($sql1);
+}
 $tongcong = 0;
 $i=0;
 $conn->close();
@@ -43,7 +37,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Công Nợ</title>
+    <title>Quản Lý Thu Chi</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
         integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -64,17 +58,38 @@ $conn->close();
 </head>
 
 <body>
-    <?php include 'menu.php'; ?>
+    <?php include 'menu.html'; ?>
     <div class="row" id="ds">
         <div class="row">
-            <div class="col-12 d-flex justify-content-center mb-5">
-                <h3>QL công nợ Chùa Long Thọ</h3>
+            <div class="col-12 d-flex justify-content-center mb-1">
+                <h3>Danh Sách Thu Chùa Long Thọ
+                    <?php 
+if(isset($_GET['tungay']) && isset($_GET['denngay'])){
+    echo "Từ ngày ".date("d-m-Y", strtotime($_GET['tungay']))." đến ngày ".date("d-m-Y", strtotime($_GET['denngay']));
+}
+?>
+                </h3>
             </div>
         </div>
         <div class="row">
-            <div class="col-12 d-flex justify-content-center mb-5">
-                <button type="button" class="btn btn-primary" id="btnAddNew">Thêm Mới</button>
-<button type="button" class="btn btn-info" id="btnin" name="btnin" style="margin-left: 68px;" onclick="printTable()">In</button>
+            <div class="col-12 d-flex justify-content-center mb-1">
+                <!-- <button type="button" class="btn btn-primary" id="btnAddNew">Thêm Mới</button> -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center mb-1">
+                <form action="dsthu.html" method="GET">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1 mb-2">Từ Ngày</label><br>
+                        <input type="text" id="datepickertu" name="tungay">
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="exampleFormControlTextarea1">Đến Ngày</label><br>
+                        <input type="text" id="datepickerden" name="denngay">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btntim" name="btntim">Tìm</button>
+                    <button type="button" class="btn btn-info" id="btnin" name="btnin" style="margin-left: 68px;" onclick="printTable()">In</button>
+                </form>
             </div>
         </div>
         <div class="row">
@@ -83,9 +98,12 @@ $conn->close();
                     <thead>
                         <tr>
                             <th>STT</th>
-                            <th>Họ Tên</th>
-                            <th>Số Tiền</th>
-                            <th>Lãi Xuất</th>
+                            <th>Ngày Thu</th>
+                            <th>Mô Tả</th>
+                            <th>Thu</th>
+                            <th>Số Lượng</th>
+                            <th>Đơn Giá</th>
+                            <th>Tổng Tiền</th>
                             <th class="hide-on-print">Hành Động</th>
                         </tr>
                     </thead>
@@ -94,18 +112,31 @@ $conn->close();
                         if ($result) {
                             // output data of each row
                             while($row = $result->fetch_assoc()) {
-                                $tongcong = $tongcong + $row["sotien"];
+                                $tongcong = $tongcong + $row["tongtien"];
                                 $i=$i+1;
                         ?>
                         <tr>
-                            <td><?php echo $i?></td>
-                            <td><?php echo $row["hoten"] ?></td>
-                            <td><?php echo number_format($row["sotien"], 0, '', ',');?></td>
-                            <td><?php echo $row["laixuat"] ?></td>
-                            <td class="hide-on-print">
-                            <button type="button" class="btn btn-warning" id="btnxoa" onclick="xoa(<?php echo $row['id']?>)">Xóa</button>
-                            <button type="button" class="btn btn-info" id="btnsua" onclick="sua(<?php echo $row['id'] ?>)">Sửa</button>
+                            <td><?php echo $i ?></td>
+                            <td><?php echo date("d-m-Y", strtotime($row["ngay"]))  ?></td>
+                            <td><?php echo $row["mota"] ?></td>
+                            <td>
+                                <?php
+                                    if($row["thuorchi"]==1){
+                                        echo "Thu";
+                                    }
+                                    else{
+                                        echo "Chi";
+                                    } 
+                                ?>
                             </td>
+                            <td><?php echo $row["soluong"] ?></td>
+                            <td><?php echo $row["dongia"] ?></td>
+                            <td><?php echo number_format($row["tongtien"], 0, '', ','); ?></td>
+                            <td class="hide-on-print">
+                            <button type="button" class="btn btn-warning" onclick="xoa(<?php echo $row['id']?>)">Xóa</button>
+                            <button type="button" class="btn btn-info" id="btnxoa" onclick="sua(<?php echo $row['id'] ?>)">Sửa</button>
+                            </td>
+                          
                         </tr>
                         <?php
                         }} else {
@@ -114,13 +145,16 @@ $conn->close();
                             <td>0</td>
                             <td>0</td>
                             <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
                         </tr>";
                           } ?>
                     </tbody>
                     <tfoot class="print-total">
-                        <td colspan="1"></td>
+                        <td colspan="5"></td>
                         <td>Tổng:</td>
-                        <td colspan="3"><?php echo number_format($tongcong, 0, '', ',');?></td>
+                        <td colspan="2"><?php echo number_format($tongcong, 0, '', ','); ?></td>
                     </tfoot>
                 </table>
             </div>
@@ -146,24 +180,39 @@ $conn->close();
     <div class="row">
         <div id="f-thuchi" class="col-12 d-flex justify-content-center mb-5 d-none">
 
-            <form style="min-width:800px; position: absolute;top: 4%; left: 18%; z-index:999" action="qlcongno.php"
-                method="POST">
-                <h3>Nợ Củ</h3>
+            <form style="min-width:800px; position: absolute;top: 4%; left: 18%; z-index:999" action="" method="POST">
+                <h3>Thu/Chi</h3>
                 <div class="form-group">
-                    <label for="hoten">Họ Tên</label>
-                    <input type="text" class="form-control" id="hoten" name="hoten"></input>
+                    <label for="exampleFormControlTextarea1">Ngày</label><br>
+                    <input type="text" id="datepicker">
                 </div>
                 <div class="form-group">
-                    <label for="laixuat">Số Tiền</label>
-                    <input type="number" class="form-control" id="laixuat" name="sotien"></input>
+                    <label for="exampleFormControlTextarea1">Lý Do</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="laixuat">Lãi Xuất</label>
-                    <input type="text" class="form-control" id="laixuat" name="laixuat"></input>
+                    <label for="exampleFormControlInput1">Số Lượng</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary" id="btn-luu" name="btnluu">Lưu</button>
-                    <button type="button" class="btn btn-primary" id="btndong" style="margin-left:70px;">Đóng</button>
+                    <label for="exampleFormControlInput1">Đơn Giá</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Đơn Giá</label>
+                    <input type="number" class="form-control" id="exampleFormControlInput1">
+                </div>
+                <div class="form-group mb-5">
+                    <label for="exampleFormControlSelect1">Hành Động
+                    </label>
+                    <select class="form-control" id="exampleFormControlSelect1">
+                        <option>Thu</option>
+                        <option>Chi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" name="btnluu">Lưu</button>
+                    <button type="button" class="btn btn-primary" id="btndong">Đóng</button>
                 </div>
             </form>
         </div>
@@ -178,7 +227,9 @@ $conn->close();
     </script>
     </script>
     <script>
-function printTable() {
+    
+    
+    function printTable() {
     // Giả định về số hàng trên mỗi trang
     var firstPageRows = 11; // Số hàng trên trang đầu
     var otherPageRows = 14; // Số hàng trên các trang sau
@@ -212,10 +263,10 @@ function printTable() {
 }
 
 window.onbeforeprint = printTable;
-    $("#btnin").click(function() {
-        window.print();
-    });
+    
     $("#datepicker").datepicker();
+    $("#datepickertu").datepicker();
+    $("#datepickerden").datepicker();
     $("#btnAddNew").click(function() {
         $("#f-thuchi").removeClass("d-none");
         $("#ds").addClass("d-none");
@@ -224,15 +275,28 @@ window.onbeforeprint = printTable;
         $("#ds").removeClass("d-none");
         $("#f-thuchi").addClass("d-none");
     });
-
-    $("#btn-luu").click(function() {
-
+    $("#btnin").click(function() {
+        window.print();
     });
-    function xoa(id){
-        location.href='qlcongno.php?id='+id+'&xoa=true';
+    function xoa (id) {
+        if (confirm("Bạn chắc chắn muốn xóa!") == true) {
+            console.log("a");
+            $.ajax({
+            url:"xoa.html",    //the page containing php script
+            type: "post",    //request type,
+            dataType: 'json',
+            data: {id: id},
+            success:function(result){
+                console.log(result);
+                alert('xóa thành công!');
+                location.href='dsthu.html';
+            }
+        });
+        location.href='dsthu.html';
+        }
     }
-    function sua(id){
-        location.href='suacongno.php?id='+id;
+        function sua(id){
+        location.href='sua.html?id='+id;
     }
     </script>
 

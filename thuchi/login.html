@@ -3,7 +3,7 @@
 if(isset($_POST['btn'])){
     if($_POST['taikhoan']=="trutrichualongtho8888" && $_POST['password']=="thichhaidao8888"){
         setcookie('isLogin', 'true', time() + (86400 * 365), "/"); // 86400 = 1 day 
-        header('Location: index.php');
+        header('Location: index.html');
     }else{
         echo '<script language="javascript">';
         echo 'alert("Tài khoản mật khẩu chưa đúng")';
@@ -26,7 +26,7 @@ if(isset($_POST['btn'])){
 <body>
     <div class="row d-flex justify-content-center">
         <div class="col-4">
-            <form method="POST" action="login.php">
+            <form method="POST" action="login.html">
                 <div class="form-group">
                     <label for="exampleInputEmail1">Tài khoản</label>
                     <input type="text" class="form-control" name="taikhoan" id="exampleInputEmail1">
